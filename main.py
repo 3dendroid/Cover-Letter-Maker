@@ -1,19 +1,32 @@
 from fpdf import FPDF
 
-from text import TEXT
+from text import HEAD, BODY
 
-compact_cover_letter_ascii = TEXT
+# Constants
+FONT_SIZE = 10
+NAME = "Denis_Sazonov"
+COMPANY = "Maltego"
 
-# Create a new one-page PDF
+# Replace special characters
+head_ascii = HEAD.replace("’", "'").replace("“", '"').replace("”", '"').replace("–", "-")
+body_ascii = BODY.replace("’", "'").replace("“", '"').replace("”", '"').replace("–", "-")
+
+# Create PDF
 pdf = FPDF()
 pdf.add_page()
-pdf.set_auto_page_break(auto=True, margin=10)
-pdf.set_font("Arial", size=12) # Font and size
+pdf.set_auto_page_break(auto=True, margin=10)  # Margin in mm
+pdf.set_font("Arial", size=FONT_SIZE)  # Font and size
 
-# Add text to the PDF
-for line in compact_cover_letter_ascii.strip().split('\n'):
-    pdf.multi_cell(0, 8, line) # line height
+# HEAD
+for line in head_ascii.strip().split('\n'):
+    pdf.cell(0, 8, line, ln=1, align='R')  # Line height and right alignment
 
-# Save the compact PDF
-compact_pdf_path = "Cover_Letter.pdf"
-pdf.output(compact_pdf_path)
+pdf.ln(5)  # New line
+
+# BODY
+for line in body_ascii.strip().split('\n'):
+    pdf.multi_cell(0, 8, line)  # Line height
+
+# Save PDF
+filename = f"{NAME}_Cover_Letter_{COMPANY}.pdf"
+pdf.output(filename)
